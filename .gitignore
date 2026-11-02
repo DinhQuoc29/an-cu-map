@@ -1,0 +1,54 @@
+# .gitignore cho An Cư Map
+
+# ============================
+# Secrets & môi trường
+# ============================
+.env
+*.env.local
+
+# ============================
+# Dữ liệu lớn (không commit)
+# ============================
+infra/valhalla/data/*.osm.pbf
+infra/valhalla/data/*.pbf
+infra/valhalla/tiles/
+infra/valhalla/valhalla_tiles/
+
+# ============================
+# Java / Maven
+# ============================
+backend/target/
+backend/.mvn/wrapper/maven-wrapper.jar
+*.class
+*.jar
+*.war
+*.ear
+
+# ============================
+# Node / Frontend
+# ============================
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+
+# ============================
+# IDE
+# ============================
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+
+# ============================
+# OS
+# ============================
+.DS_Store
+Thumbs.db
+
+# ============================
+# Logs
+# ============================
+*.log
+logs/
+

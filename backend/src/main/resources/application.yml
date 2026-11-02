@@ -1,0 +1,78 @@
+spring:
+  application:
+    name: an-cu-map-backend
+
+  datasource:
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 30000
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: validate        # Flyway quản lý schema; Hibernate chỉ validate
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: false
+
+  cache:
+    type: caffeine
+    caffeine:
+      spec: maximumSize=1000,expireAfterWrite=10m
+
+# Valhalla routing engine
+valhalla:
+  url: ${VALHALLA_URL:http://localhost:8002}
+  timeout-seconds: 10
+  retry-max-attempts: 2
+
+# Open-Meteo Air Quality (không cần key)
+open-meteo:
+  base-url: ${OPEN_METEO_BASE_URL:https://air-quality-api.open-meteo.com}
+  timeout-seconds: 8
+
+# OpenAQ
+openaq:
+  base-url: https://api.openaq.org/v3
+  api-key: ${OPENAQ_API_KEY:}
+  timeout-seconds: 8
+
+# Resilience4j
+resilience4j:
+  circuitbreaker:
+    instances:
+      valhalla:
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 30s
+      openmeteo:
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 60s
+      openaq:
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 60s
+
+server:
+  port: 8080
+  error:
+    include-message: always
+
+logging:
+  level:
+    vn.ancu: DEBUG
+    org.springframework.web: INFO
+    # KHÔNG log ở mức DEBUG/INFO nếu chứa tọa độ người dùng
+

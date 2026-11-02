@@ -1,0 +1,51 @@
+version: "3.9"
+
+services:
+  # -------------------------------------------------------
+  # PostgreSQL 16 + PostGIS 3
+  # -------------------------------------------------------
+  db:
+    image: postgis/postgis:16-3.4-alpine
+    container_name: ancu_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME:-ancu}
+      POSTGRES_USER: ${DB_USER:-ancu}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-changeme}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-ancu} -d ${DB_NAME:-ancu}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # -------------------------------------------------------
+  # Valhalla routing engine (tự host)
+  # Dữ liệu OSM đặt trong infra/valhalla/data/
+  # Lần đầu chạy: cần build tiles trước (xem README)
+  # -------------------------------------------------------
+  valhalla:
+    image: ghcr.io/gis-ops/docker-valhalla/valhalla:latest
+    container_name: ancu_valhalla
+    restart: unless-stopped
+    ports:
+      - "8002:8002"
+    volumes:
+      - ./infra/valhalla:/custom_files
+    environment:
+      - use_tiles_ignore_pbf=True  # dùng tiles đã build sẵn nếu có
+      - serve_tiles=True
+      - build_admins=False
+      - build_time_zones=False
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8002/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  pgdata:
+
