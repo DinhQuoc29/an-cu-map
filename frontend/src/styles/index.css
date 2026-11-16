@@ -55,4 +55,43 @@ body,
   .source-badge {
     @apply inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium;
   }
+
+  /* Bộ lọc tiện ích (nổi trên bản đồ, ngay dưới search bar) */
+  .amenity-filters {
+    @apply absolute top-16 left-4 right-4 z-10 flex flex-wrap gap-1.5
+           justify-center pointer-events-none;
+  }
+
+  .amenity-filter-chip {
+    @apply pointer-events-auto inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full
+           text-xs font-medium shadow-md bg-white/80 text-gray-400
+           backdrop-blur-sm transition-colors border border-gray-200;
+  }
+
+  .amenity-filter-chip--on {
+    @apply bg-white text-gray-800 border-gray-300;
+  }
+
+  /* Marker tiện ích trên bản đồ */
+  .amenity-marker {
+    @apply w-7 h-7 rounded-full bg-white shadow-lg flex items-center justify-center
+           text-base cursor-pointer select-none border-2 transition-transform;
+    border-color: var(--dot, #2563eb);
+  }
+
+  .amenity-marker:hover {
+    @apply scale-110;
+  }
+
+  /* Nội dung popup tiện ích */
+  .amenity-popup {
+    @apply flex flex-col leading-tight;
+    font-size: 12px;
+    color: #1f2937;
+  }
+
+  .amenity-popup__sub {
+    @apply text-gray-400;
+    font-size: 11px;
+  }
 }

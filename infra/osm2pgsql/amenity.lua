@@ -4,14 +4,15 @@
 
 local tables = {}
 
--- Bảng đích trong PostgreSQL
-tables.amenity = osm2pgsql.define_node_table('amenity_import', {
+-- Bảng đích: `amenity` được tạo sẵn bởi Flyway V1__init.sql (có GiST index).
+-- create_table = false để KHÔNG tự tạo bảng, chèn thẳng vào schema có sẵn.
+tables.amenity = osm2pgsql.define_node_table('amenity', {
     { column = 'osm_id',      type = 'bigint' },
     { column = 'category',    type = 'text' },
     { column = 'subcategory', type = 'text' },
     { column = 'name',        type = 'text' },
     { column = 'geom',        type = 'point', projection = 4326 },
-})
+}, { create_table = false })
 
 -- Ánh xạ tag OSM → category/subcategory
 local category_map = {

@@ -24,7 +24,7 @@ export interface DataField<T> {
   updatedAt: string           // ISO 8601
 }
 
-// ─── Geocoding (Nominatim) ──────────────────────────────────────────────────
+// ─── Geocoding (Nominatim qua /api/geocode) ─────────────────────────────────
 
 export interface GeocodeResult {
   placeId: string
@@ -62,7 +62,7 @@ export interface AmenitiesResponse {
 
 export interface AirQualityResponse {
   pm25: DataField<number>
-  nearestStationKm: number | null   // khoảng cách trạm đo gần nhất (km)
+  nearestStationKm: number | null   // khoảng cách trạm đo gần nhất (km), null = mô hình
 }
 
 // ─── Flood ───────────────────────────────────────────────────────────────────
@@ -88,6 +88,14 @@ export interface RouteResult {
 
 // ─── Report (tổng hợp) ───────────────────────────────────────────────────────
 
+export interface ReportParams {
+  lat: number
+  lng: number
+  destLat?: number
+  destLng?: number
+  mode?: TravelMode
+}
+
 export interface LocationReport {
   lat: number
   lng: number
@@ -96,4 +104,3 @@ export interface LocationReport {
   floodRisk: FloodRiskResponse | null
   commute: RouteResult[] | null
 }
-

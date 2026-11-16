@@ -6,6 +6,7 @@ import type { LatLng } from '@/lib/geo'
 import { HANOI_CENTER, HANOI_DEFAULT_ZOOM } from '@/lib/geo'
 import { vi } from '@/lib/i18n'
 import LocationMarker from './LocationMarker'
+import type { ReactNode } from 'react'
 
 /**
  * Sử dụng CARTO Voyager style (dựa trên OpenStreetMap data)
@@ -19,9 +20,11 @@ interface MapViewProps {
   onLocationSelect: (pos: LatLng) => void
   selectedLocation: LatLng | null
   center?: LatLng | null
+  /** Render thêm vào trong <Map> (marker tiện ích, isochrone...) */
+  children?: ReactNode
 }
 
-export default function MapView({ onLocationSelect, selectedLocation, center }: MapViewProps) {
+export default function MapView({ onLocationSelect, selectedLocation, center, children }: MapViewProps) {
   const [cursor, setCursor] = useState<'crosshair' | 'grab'>('grab')
   const mapRef = useRef<MapRef | null>(null)
 
@@ -69,6 +72,9 @@ export default function MapView({ onLocationSelect, selectedLocation, center }: 
       {selectedLocation && (
         <LocationMarker position={selectedLocation} />
       )}
+
+      {/* Marker/lớp bổ sung (tiện ích, isochrone...) — cần Map context */}
+      {children}
     </Map>
   )
 }

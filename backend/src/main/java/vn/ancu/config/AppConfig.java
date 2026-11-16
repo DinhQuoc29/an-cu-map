@@ -29,11 +29,19 @@ public class AppConfig {
 
     /**
      * Cache manager dùng Caffeine.
-     * Các cache name quan trọng: "routeCache", "airQualityCache", "amenityCache"
+     * Các cache name: "routeCache", "airQualityCache", "amenityCache", "geocodeCache"
      */
     @Bean
     public CacheManager cacheManager() {
         var manager = new CaffeineCacheManager();
+        // geocodeCache: TTL 1 giờ — Nominatim rate limit 1 req/s
+        manager.registerCustomCache("geocodeCache",
+                Caffeine.newBuilder()
+                        .maximumSize(500)
+                        .expireAfterWrite(Duration.ofHours(1))
+                        .recordStats()
+                        .build());
+        // Cache chung cho routing, air quality, amenity
         manager.setCaffeine(
                 Caffeine.newBuilder()
                         .maximumSize(2000)

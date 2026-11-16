@@ -10,6 +10,15 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  // @ts-expect-error Vitest configuration field
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: ['./src/test/setup.ts'],
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
   server: {
     port: 5173,
     proxy: {

@@ -1,7 +1,9 @@
 import { useState, useCallback } from 'react'
 import MapView from '@/components/map/MapView'
+import AmenityLayer from '@/components/map/AmenityLayer'
 import ReportSheet from '@/components/report/ReportSheet'
 import SearchBar from '@/components/common/SearchBar'
+import { useAmenities } from '@/hooks/useAmenities'
 import type { LatLng } from '@/lib/geo'
 import { vi } from '@/lib/i18n'
 
@@ -11,6 +13,12 @@ import { vi } from '@/lib/i18n'
 export default function MapPage() {
   const [selectedLocation, setSelectedLocation] = useState<LatLng | null>(null)
   const [mapCenter, setMapCenter] = useState<LatLng | null>(null)
+
+  // Tiện ích gần nhất vị trí đã chọn (bản đồ + report cùng dùng nguồn này)
+  const amenitiesQuery = useAmenities(
+    selectedLocation?.lat ?? null,
+    selectedLocation?.lng ?? null,
+  )
 
   const handleLocationSelect = useCallback((pos: LatLng) => {
     setSelectedLocation(pos)
@@ -32,7 +40,12 @@ export default function MapPage() {
         onLocationSelect={handleLocationSelect}
         selectedLocation={selectedLocation}
         center={mapCenter}
-      />
+      >
+        {/* Layer tiện ích: markers + bộ lọc (nằm trong Map context) */}
+        {selectedLocation && amenitiesQuery.data && (
+          <AmenityLayer items={amenitiesQuery.data.items} />
+        )}
+      </MapView>
 
       {/* Thanh tìm kiếm nổi trên bản đồ */}
       <div className="absolute top-4 left-4 right-4 z-10 flex justify-center">

@@ -1,0 +1,62 @@
+lat,lng,severity,source_type,source_name,source_url,event_date,confidence
+21.0245,105.8412,4,HISTORICAL,Báo Hà Nội Mới,https://hanoimoi.vn/,2024-07-23,0.6
+21.0132,105.8201,3,HISTORICAL,VnExpress,https://vnexpress.net/,2023-08-15,0.5
+21.0387,105.8356,3,HISTORICAL,Báo Hà Nội Mới,https://hanoimoi.vn/,2024-07-23,0.6
+21.0298,105.8469,4,HISTORICAL,Tiền Phong,https://tienphong.vn/,2024-07-24,0.55
+21.0421,105.8533,2,HISTORICAL,Dân Trí,https://dantri.com.vn/,2023-06-10,0.5
+21.0156,105.8318,4,HISTORICAL,VnExpress,https://vnexpress.net/,2024-07-23,0.65
+21.0312,105.8172,3,HISTORICAL,Báo Hà Nội Mới,https://hanoimoi.vn/,2022-10-01,0.5
+21.0489,105.8601,2,HISTORICAL,Tiền Phong,https://tienphong.vn/,2023-08-20,0.45
+21.0088,105.8455,5,HISTORICAL,VnExpress,https://vnexpress.net/,2024-07-23,0.7
+21.0362,105.8237,3,HISTORICAL,Dân Trí,https://dantri.com.vn/,2024-07-24,0.55
+21.0201,105.8392,4,HISTORICAL,Báo Hà Nội Mới,https://hanoimoi.vn/,2024-07-23,0.6
+21.0455,105.8488,2,HISTORICAL,VnExpress,https://vnexpress.net/,2023-07-15,0.4
+21.0323,105.8521,3,HISTORICAL,Tiền Phong,https://tienphong.vn/,2024-07-23,0.55
+21.0178,105.8143,4,HISTORICAL,Dân Trí,https://dantri.com.vn/,2024-07-24,0.6
+21.0411,105.8367,3,HISTORICAL,VnExpress,https://vnexpress.net/,2022-09-08,0.5
+21.0267,105.8578,2,HISTORICAL,Báo Hà Nội Mới,https://hanoimoi.vn/,2023-06-12,0.45
+21.0098,105.8322,5,HISTORICAL,VnExpress,https://vnexpress.net/,2024-07-23,0.75
+21.0345,105.8445,4,HISTORICAL,Tiền Phong,https://tienphong.vn/,2024-07-23,0.65
+21.0512,105.8289,2,HISTORICAL,Dân Trí,https://dantri.com.vn/,2023-08-05,0.45
+21.0233,105.8512,3,HISTORICAL,VnExpress,https://vnexpress.net/,2023-08-15,0.5
+21.0389,105.8178,3,HISTORICAL,Báo Hà Nội Mới,https://hanoimoi.vn/,2022-10-01,0.5
+21.0145,105.8456,4,HISTORICAL,VnExpress,https://vnexpress.net/,2024-07-23,0.65
+21.0478,105.8534,2,HISTORICAL,Tiền Phong,https://tienphong.vn/,2023-07-20,0.4
+21.0302,105.8389,3,HISTORICAL,Dân Trí,https://dantri.com.vn/,2024-07-24,0.55
+21.0423,105.8267,2,HISTORICAL,VnExpress,https://vnexpress.net/,2023-06-08,0.45
+21.0167,105.8234,4,HISTORICAL,Báo Hà Nội Mới,https://hanoimoi.vn/,2024-07-23,0.6
+21.0556,105.8412,3,HISTORICAL,Tiền Phong,https://tienphong.vn/,2023-08-18,0.5
+21.0278,105.8156,4,HISTORICAL,VnExpress,https://vnexpress.net/,2024-07-23,0.65
+21.0334,105.8578,2,HISTORICAL,Dân Trí,https://dantri.com.vn/,2022-09-10,0.4
+21.0112,105.8389,5,HISTORICAL,VnExpress,https://vnexpress.net/,2024-07-23,0.7
+21.0467,105.8345,3,HISTORICAL,Báo Hà Nội Mới,https://hanoimoi.vn/,2023-07-14,0.5
+21.0256,105.8467,3,HISTORICAL,Tiền Phong,https://tienphong.vn/,2024-07-23,0.55
+21.0399,105.8523,2,HISTORICAL,VnExpress,https://vnexpress.net/,2023-06-11,0.45
+21.0189,105.8301,4,HISTORICAL,Dân Trí,https://dantri.com.vn/,2024-07-24,0.6
+21.0523,105.8178,3,HISTORICAL,Báo Hà Nội Mới,https://hanoimoi.vn/,2022-10-02,0.5
+21.0315,105.8412,3,HISTORICAL,VnExpress,https://vnexpress.net/,2023-08-16,0.5
+21.0434,105.8256,2,HISTORICAL,Tiền Phong,https://tienphong.vn/,2023-07-22,0.45
+21.0223,105.8534,4,HISTORICAL,Dân Trí,https://dantri.com.vn/,2024-07-23,0.6
+21.0378,105.8167,3,HISTORICAL,VnExpress,https://vnexpress.net/,2024-07-24,0.55
+21.0145,105.8512,4,HISTORICAL,Báo Hà Nội Mới,https://hanoimoi.vn/,2024-07-23,0.65
+21.0489,105.8378,2,HISTORICAL,Tiền Phong,https://tienphong.vn/,2023-06-15,0.4
+21.0267,105.8289,3,HISTORICAL,VnExpress,https://vnexpress.net/,2023-08-18,0.5
+21.0412,105.8445,3,HISTORICAL,Dân Trí,https://dantri.com.vn/,2022-09-12,0.5
+21.0178,105.8356,4,HISTORICAL,Báo Hà Nội Mới,https://hanoimoi.vn/,2024-07-23,0.6
+21.0534,105.8512,2,HISTORICAL,VnExpress,https://vnexpress.net/,2023-07-16,0.45
+21.0301,105.8178,4,HISTORICAL,Tiền Phong,https://tienphong.vn/,2024-07-23,0.65
+21.0445,105.8367,3,HISTORICAL,Dân Trí,https://dantri.com.vn/,2023-06-09,0.5
+21.0212,105.8456,3,HISTORICAL,VnExpress,https://vnexpress.net/,2024-07-24,0.55
+21.0367,105.8289,3,HISTORICAL,Báo Hà Nội Mới,https://hanoimoi.vn/,2023-08-19,0.5
+21.0123,105.8412,5,HISTORICAL,VnExpress,https://vnexpress.net/,2024-07-23,0.75
+21.0489,105.8156,2,HISTORICAL,Tiền Phong,https://tienphong.vn/,2022-10-03,0.4
+21.0278,105.8523,3,HISTORICAL,Dân Trí,https://dantri.com.vn/,2023-08-20,0.5
+21.0423,105.8234,2,HISTORICAL,VnExpress,https://vnexpress.net/,2023-07-18,0.45
+21.0156,105.8378,4,HISTORICAL,Báo Hà Nội Mới,https://hanoimoi.vn/,2024-07-23,0.6
+21.0512,105.8445,3,HISTORICAL,Tiền Phong,https://tienphong.vn/,2024-07-24,0.55
+21.0334,105.8167,3,HISTORICAL,VnExpress,https://vnexpress.net/,2023-06-13,0.5
+21.0467,105.8512,2,HISTORICAL,Dân Trí,https://dantri.com.vn/,2022-09-14,0.45
+21.0245,105.8301,4,HISTORICAL,Báo Hà Nội Mới,https://hanoimoi.vn/,2024-07-23,0.6
+21.0389,105.8456,3,HISTORICAL,VnExpress,https://vnexpress.net/,2023-08-21,0.5
+21.0134,105.8234,5,HISTORICAL,VnExpress,https://vnexpress.net/,2024-07-23,0.7
+

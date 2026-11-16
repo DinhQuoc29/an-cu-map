@@ -2,6 +2,10 @@ spring:
   application:
     name: an-cu-map-backend
 
+  threads:
+    virtual:
+      enabled: true   # Java 21 virtual threads — dùng cho CompletableFuture.supplyAsync
+
   datasource:
     url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
     username: ${DB_USER}
