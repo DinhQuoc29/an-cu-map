@@ -94,4 +94,13 @@ body,
     @apply text-gray-400;
     font-size: 11px;
   }
+
+  .amenity-popup__address {
+    @apply mt-1 max-w-56 whitespace-normal text-gray-700;
+    font-size: 12px;
+  }
+
+  .amenity-popup__address--missing {
+    @apply text-gray-400 italic;
+  }
 }

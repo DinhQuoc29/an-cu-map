@@ -8,6 +8,7 @@ public record AmenityItemDto(
         String category,
         String subcategory,
         String name,
+        String address,
         double lat,
         double lng,
         double distanceM

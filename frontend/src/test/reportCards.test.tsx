@@ -106,8 +106,8 @@ describe('AmenityCard', () => {
     const data: AmenitiesResponse = {
       radiusM: 2000,
       items: [
-        { id: 1, category: 'hospital', subcategory: null, name: 'BV Bạch Mai', lat: 21.0, lng: 105.8, distanceM: 450 },
-        { id: 2, category: 'school', subcategory: null, name: 'Trường THPT', lat: 21.01, lng: 105.81, distanceM: 800 },
+        { id: 1, category: 'hospital', subcategory: null, name: 'BV Bạch Mai', address: 'Hà Nội', lat: 21.0, lng: 105.8, distanceM: 450 },
+        { id: 2, category: 'school', subcategory: null, name: 'Trường THPT', address: null, lat: 21.01, lng: 105.81, distanceM: 800 },
       ],
     }
     render(<AmenityCard data={data} isLoading={false} />, { wrapper })

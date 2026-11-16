@@ -40,6 +40,10 @@ export default function MapView({ onLocationSelect, selectedLocation, center, ch
 
   const handleClick = useCallback(
     (e: MapMouseEvent) => {
+      const target = e.originalEvent.target
+      if (target instanceof Element && target.closest('.amenity-marker, .maplibregl-popup')) {
+        return
+      }
       const { lat, lng } = e.lngLat
       onLocationSelect({ lat, lng })
     },

@@ -39,6 +39,7 @@ export default function AmenityLayer({ items }: AmenityLayerProps) {
   }
 
   const visible = items.filter((i) => enabled.has(i.category))
+  const openItem = visible.find((item) => item.id === openId)
 
   return (
     <>
@@ -64,7 +65,6 @@ export default function AmenityLayer({ items }: AmenityLayerProps) {
       {/* Marker tiện ích */}
       {visible.map((item) => {
         const meta = CATEGORY_META[item.category]
-        const isOpen = openId === item.id
         return (
           <Marker
             key={item.id}
@@ -76,31 +76,45 @@ export default function AmenityLayer({ items }: AmenityLayerProps) {
               type="button"
               className="amenity-marker"
               style={{ '--dot': meta.color } as CSSProperties}
-              onClick={() => setOpenId(isOpen ? null : item.id)}
+              onClick={(event) => {
+                event.preventDefault()
+                event.stopPropagation()
+                setOpenId((currentId) => currentId === item.id ? null : item.id)
+              }}
               aria-label={item.name ?? vi.amenity.categories[item.category]}
+              aria-expanded={openId === item.id}
             >
               {meta.icon}
             </button>
-            {isOpen && (
-              <Popup
-                longitude={item.lng}
-                latitude={item.lat}
-                anchor="bottom"
-                offset={4}
-                closeOnClick={false}
-              >
-                <div className="amenity-popup">
-                  <strong>{item.name ?? vi.amenity.categories[item.category]}</strong>
-                  <span className="amenity-popup__sub">
-                    {vi.amenity.categories[item.category]} ·{' '}
-                    {formatDistance(item.distanceM)}
-                  </span>
-                </div>
-              </Popup>
-            )}
           </Marker>
         )
       })}
+
+      {openItem && (
+        <Popup
+          longitude={openItem.lng}
+          latitude={openItem.lat}
+          anchor="bottom"
+          offset={12}
+          closeOnClick={false}
+          onClose={() => setOpenId(null)}
+        >
+          <div className="amenity-popup" onClick={(event) => event.stopPropagation()}>
+            <strong>{openItem.name ?? vi.amenity.categories[openItem.category]}</strong>
+            <span className="amenity-popup__sub">{vi.amenity.categories[openItem.category]}</span>
+            {openItem.address ? (
+              <span className="amenity-popup__address">{openItem.address}</span>
+            ) : (
+              <span className="amenity-popup__address amenity-popup__address--missing">
+                {vi.amenity.addressUnavailable}
+              </span>
+            )}
+            <span className="amenity-popup__sub">
+              {vi.amenity.distance}: {formatDistance(openItem.distanceM)}
+            </span>
+          </div>
+        </Popup>
+      )}
     </>
   )
 }

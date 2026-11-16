@@ -9,6 +9,7 @@ public interface AmenityNearbyRow {
     String getCategory();
     String getSubcategory();
     String getName();
+    String getAddress();
     Double getLat();
     Double getLng();
     Double getDistanceM();

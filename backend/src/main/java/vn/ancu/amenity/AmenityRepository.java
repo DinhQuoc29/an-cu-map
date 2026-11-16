@@ -14,6 +14,7 @@ public interface AmenityRepository extends JpaRepository<Amenity, Long> {
                 category,
                 subcategory,
                 name,
+                address,
                 ST_Y(geom::geometry)                              AS lat,
                 ST_X(geom::geometry)                              AS lng,
                 ST_Distance(geom, ST_MakePoint(:lng, :lat)::geography) AS distance_m

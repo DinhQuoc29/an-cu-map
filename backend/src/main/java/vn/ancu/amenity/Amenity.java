@@ -25,6 +25,9 @@ public class Amenity {
     @Column(name = "name", length = 255)
     private String name;
 
+    @Column(name = "address", columnDefinition = "text")
+    private String address;
+
     @Column(name = "geom", nullable = false, columnDefinition = "geography(Point,4326)")
     private Point geom;
 
@@ -36,6 +39,7 @@ public class Amenity {
     public String getCategory() { return category; }
     public String getSubcategory() { return subcategory; }
     public String getName() { return name; }
+    public String getAddress() { return address; }
     public Point getGeom() { return geom; }
     public Instant getCreatedAt() { return createdAt; }
 }

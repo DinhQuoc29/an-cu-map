@@ -33,6 +33,7 @@ public class AmenityService {
                                         row.getCategory(),
                                         row.getSubcategory(),
                                         row.getName(),
+                                        row.getAddress(),
                                         row.getLat(),
                                         row.getLng(),
                                         row.getDistanceM()

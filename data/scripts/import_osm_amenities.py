@@ -13,8 +13,8 @@ Chạy (từ thư mục gốc an-cu-map/):
     python data/scripts/import_osm_amenities.py \\
         --pbf infra/valhalla/data/vietnam-latest.osm.pbf
 
-Idempotent: dùng ON CONFLICT (osm_id) DO NOTHING nhờ unique index từ V2 migration,
-nên chạy lại nhiều lần không nhân bản dữ liệu.
+Nhập node và khu vực OSM (closed way/multipolygon relation). Khu vực được chuyển
+thành điểm nằm bên trong ranh giới bằng ST_PointOnSurface. Khóa gồm loại và ID OSM.
 
 Bounding box Hà Nội (ước lượng thô, kiểm tra lại khi dùng thật):
     lat 20.85–21.40, lng 105.28–106.05
@@ -24,6 +24,9 @@ import argparse
 import os
 import sys
 from pathlib import Path
+
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
 
 try:
     import psycopg2
@@ -73,28 +76,49 @@ AMENITY_TAGS = {
 SHOP_TAGS = {
     "supermarket": ("supermarket", None),
     "convenience": ("market", "convenience"),
-    "marketplace": ("market", None),
 }
+AMENITY_TAGS["marketplace"] = ("market", None)
 
 
 class AmenityHandler(osmium.SimpleHandler):
-    """Đọc node OSM, giữ lại những node có tag tiện ích nằm trong bbox Hà Nội."""
+    """Đọc điểm và khu vực OSM có tag tiện ích nằm trong bbox Hà Nội."""
 
     def __init__(self):
         super().__init__()
-        self.rows = []  # (osm_id, category, subcategory, name, lat, lng)
+        self.rows = []  # (osm_type, osm_id, category, subcategory, name, address, WKB hex)
+        self.wkb_factory = osmium.geom.WKBFactory()
+
+    @staticmethod
+    def classify(tags):
+        if tags.get("amenity") in AMENITY_TAGS:
+            return AMENITY_TAGS[tags["amenity"]]
+        if tags.get("shop") in SHOP_TAGS:
+            return SHOP_TAGS[tags["shop"]]
+        return None
+
+    @staticmethod
+    def address_from(tags):
+        """Ghép các tag địa chỉ OSM thường gặp thành một dòng dễ đọc."""
+        full_address = tags.get("addr:full") or tags.get("addr:street_address")
+        if full_address:
+            return full_address
+
+        parts = [
+            tags.get("addr:housenumber"),
+            tags.get("addr:street") or tags.get("addr:place"),
+            tags.get("addr:quarter") or tags.get("addr:suburb"),
+            tags.get("addr:district"),
+            tags.get("addr:city") or tags.get("addr:province"),
+        ]
+        address = ", ".join(dict.fromkeys(part.strip() for part in parts if part and part.strip()))
+        return address or None
 
     def node(self, n):
         tags = n.tags
-        category = None
-        subcategory = None
-        if tags.get("amenity") in AMENITY_TAGS:
-            category, subcategory = AMENITY_TAGS[tags["amenity"]]
-        elif tags.get("shop") in SHOP_TAGS:
-            category, subcategory = SHOP_TAGS[tags["shop"]]
-
-        if category is None:
+        classified = self.classify(tags)
+        if classified is None or not n.location.valid():
             return
+        category, subcategory = classified
 
         # Node trong bbox Hà Nội (loose check — đủ cho import)
         if not (HANOI_MIN_LAT <= n.location.lat <= HANOI_MAX_LAT
@@ -103,30 +127,68 @@ class AmenityHandler(osmium.SimpleHandler):
 
         name = tags.get("name") or tags.get("name:vi")
         self.rows.append((
+            "node",
             n.id,
             category,
             subcategory,
             name,
-            round(n.location.lat, 6),
-            round(n.location.lon, 6),
+            self.address_from(tags),
+            self.wkb_factory.create_point(n),
+        ))
+
+    def area(self, area):
+        """Nhập closed way và multipolygon relation thành điểm đại diện."""
+        classified = self.classify(area.tags)
+        if classified is None:
+            return
+        category, subcategory = classified
+        osm_type = "way" if area.from_way() else "relation"
+        self.rows.append((
+            osm_type,
+            area.orig_id(),
+            category,
+            subcategory,
+            area.tags.get("name") or area.tags.get("name:vi"),
+            self.address_from(area.tags),
+            self.wkb_factory.create_multipolygon(area),
         ))
 
 
-def flush(conn, rows, table="amenity"):
-    """Chèn batch vào bảng amenity, idempotent theo osm_id (V2 unique index)."""
+def flush(conn, rows):
+    """Upsert batch theo loại và ID đối tượng OSM."""
     if not rows:
         return 0
-    sql = f"""
-        INSERT INTO {table} (osm_id, category, subcategory, name, geom)
-        VALUES %s
-        ON CONFLICT (osm_id) DO NOTHING
+    sql = """
+        WITH incoming AS (
+            SELECT osm_type, osm_id, category, subcategory, name, address,
+                   ST_PointOnSurface(ST_GeomFromWKB(decode(wkb_hex, 'hex'), 4326)) AS geom,
+                   min_lat, max_lat, min_lng, max_lng
+            FROM (VALUES %s) AS batch(
+                osm_type, osm_id, category, subcategory, name, address, wkb_hex,
+                min_lat, max_lat, min_lng, max_lng
+            )
+        )
+        INSERT INTO amenity (osm_type, osm_id, category, subcategory, name, address, geom)
+        SELECT osm_type, osm_id, category, subcategory, name, address, geom::geography
+        FROM incoming
+        WHERE ST_Y(geom) BETWEEN min_lat AND max_lat
+          AND ST_X(geom) BETWEEN min_lng AND max_lng
+        ON CONFLICT (osm_type, osm_id) DO UPDATE SET
+            category = EXCLUDED.category,
+            subcategory = EXCLUDED.subcategory,
+            name = EXCLUDED.name,
+            address = EXCLUDED.address,
+            geom = EXCLUDED.geom
     """
-    params = [
-        (oid, cat, sub, name,
-         f"SRID=4326;POINT({lng} {lat})")  # PostGIS point WKT (lng lat)
-        for (oid, cat, sub, name, lat, lng) in rows
-    ]
-    execute_values(conn, sql, params, page_size=BATCH_SIZE)
+    params = [row + (HANOI_MIN_LAT, HANOI_MAX_LAT, HANOI_MIN_LNG, HANOI_MAX_LNG) for row in rows]
+    with conn.cursor() as cur:
+        execute_values(
+            cur,
+            sql,
+            params,
+            template="(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+            page_size=BATCH_SIZE,
+        )
     conn.commit()
     return len(rows)
 
@@ -143,11 +205,8 @@ def main():
 
     handler = AmenityHandler()
     print(f"Đang đọc {pbf.name} và lọc tiện ích trong bbox Hà Nội...")
-    # pyosmium: io.Reader đọc PBF/OSM (tự nhận format), chỉ cần NODE (tiện ích là point).
-    # osmium.apply(reader, handler) gọi handler.node() cho từng node.
-    reader = osmium.io.Reader(str(pbf), types=osmium.osm.NODE)
-    osmium.apply(reader, handler)
-    reader.close()
+    # Locations cho way và area từ closed ways/multipolygon relations.
+    handler.apply_file(str(pbf), locations=True, idx="flex_mem")
 
     total = len(handler.rows)
     print(f"Đã tìm thấy {total} tiện ích hợp lệ trong Hà Nội.")

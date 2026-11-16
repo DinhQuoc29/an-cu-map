@@ -11,6 +11,7 @@ import CardErrorBoundary from '@/components/common/CardErrorBoundary'
 
 interface ReportSheetProps {
   location: LatLng | null
+  isOpen: boolean
   onClose: () => void
 }
 
@@ -19,8 +20,8 @@ interface ReportSheetProps {
  * Wire tất cả card vào /api/report thật.
  * Mỗi card được bọc trong CardErrorBoundary — một card lỗi không sập cả báo cáo.
  */
-export default function ReportSheet({ location, onClose }: ReportSheetProps) {
-  const isVisible = location !== null
+export default function ReportSheet({ location, isOpen, onClose }: ReportSheetProps) {
+  const isVisible = isOpen && location !== null
 
   // State điểm đến và phương tiện cho commute
   const [commuteDest, setCommuteDest] = useState<LatLng | null>(null)
@@ -55,7 +56,7 @@ export default function ReportSheet({ location, onClose }: ReportSheetProps) {
       {/* Overlay mờ phía sau */}
       {isVisible && (
         <div
-          className="fixed inset-0 bg-black/20 z-40"
+          className="pointer-events-none fixed inset-0 bg-black/20 z-40"
           onClick={onClose}
           aria-hidden="true"
         />
@@ -63,8 +64,8 @@ export default function ReportSheet({ location, onClose }: ReportSheetProps) {
 
       <div
         className={`bottom-sheet ${isVisible ? 'bottom-sheet--visible' : 'bottom-sheet--hidden'}`}
-        role="dialog"
-        aria-modal="true"
+        role={isVisible ? 'dialog' : undefined}
+        aria-modal={isVisible ? 'true' : undefined}
         aria-label={vi.report.title}
       >
         {/* Drag handle */}

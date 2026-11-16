@@ -48,6 +48,7 @@ export interface AmenityItem {
   category: AmenityCategory
   subcategory: string | null
   name: string | null
+  address: string | null
   lat: number
   lng: number
   distanceM: number

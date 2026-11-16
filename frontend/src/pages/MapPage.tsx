@@ -13,6 +13,7 @@ import { vi } from '@/lib/i18n'
 export default function MapPage() {
   const [selectedLocation, setSelectedLocation] = useState<LatLng | null>(null)
   const [mapCenter, setMapCenter] = useState<LatLng | null>(null)
+  const [isReportOpen, setIsReportOpen] = useState(false)
 
   // Tiện ích gần nhất vị trí đã chọn (bản đồ + report cùng dùng nguồn này)
   const amenitiesQuery = useAmenities(
@@ -22,15 +23,17 @@ export default function MapPage() {
 
   const handleLocationSelect = useCallback((pos: LatLng) => {
     setSelectedLocation(pos)
+    setIsReportOpen(true)
   }, [])
 
   const handleSearchSelect = useCallback((pos: LatLng) => {
     setSelectedLocation(pos)
     setMapCenter(pos)
+    setIsReportOpen(true)
   }, [])
 
   const handleCloseSheet = useCallback(() => {
-    setSelectedLocation(null)
+    setIsReportOpen(false)
   }, [])
 
   return (
@@ -66,6 +69,7 @@ export default function MapPage() {
       {/* Bottom sheet báo cáo */}
       <ReportSheet
         location={selectedLocation}
+        isOpen={isReportOpen}
         onClose={handleCloseSheet}
       />
     </div>

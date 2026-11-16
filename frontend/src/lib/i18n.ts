@@ -62,6 +62,8 @@ export const vi = {
       supermarket: 'Siêu thị',
     },
     distanceUnit: 'km',
+    distance: 'Khoảng cách',
+    addressUnavailable: 'Chưa có địa chỉ trong dữ liệu OSM',
     noData: 'Không tìm thấy tiện ích trong bán kính 3 km',
   },
   source: {
