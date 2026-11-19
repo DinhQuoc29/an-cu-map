@@ -1,0 +1,8 @@
+spring:
+  jpa:
+    show-sql: false
+logging:
+  level:
+    vn.ancu: INFO
+    org.springframework.web: WARN
+    org.hibernate.SQL: WARN

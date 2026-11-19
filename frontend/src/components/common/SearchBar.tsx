@@ -9,7 +9,7 @@ interface SearchBarProps {
 }
 
 /**
- * Thanh tìm kiếm địa chỉ dùng Nominatim.
+ * Thanh tìm kiếm địa điểm và địa chỉ.
  * Debounce: chỉ fetch khi query >= 3 ký tự (xử lý trong useGeocode).
  */
 export default function SearchBar({ onSelect }: SearchBarProps) {
@@ -19,13 +19,12 @@ export default function SearchBar({ onSelect }: SearchBarProps) {
   const inputRef = useRef<HTMLInputElement>(null)
   const listRef = useRef<HTMLUListElement>(null)
 
-  const { data: results = [], isLoading, isError } = useGeocode(query)
+  const { data: results, isLoading, isError, isDebouncing } = useGeocode(query)
 
-  // Mở dropdown khi có kết quả
+  // Reset vị trí bàn phím khi nội dung tìm kiếm đổi.
   useEffect(() => {
-    setIsOpen(results.length > 0 && query.trim().length >= 3)
     setActiveIndex(-1)
-  }, [results, query])
+  }, [query])
 
   function handleSelect(result: GeocodeResult) {
     setQuery(result.displayName)
@@ -62,11 +61,16 @@ export default function SearchBar({ onSelect }: SearchBarProps) {
           ref={inputRef}
           type="search"
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={(e) => {
+            const value = e.target.value
+            setQuery(value)
+            setIsOpen(value.trim().length >= 3)
+          }}
           onKeyDown={handleKeyDown}
-          onFocus={() => results.length > 0 && setIsOpen(true)}
+          onFocus={() => query.trim().length >= 3 && setIsOpen(true)}
+          onBlur={() => setIsOpen(false)}
           placeholder={vi.map.searchPlaceholder}
-          className="flex-1 text-sm outline-none bg-transparent placeholder-gray-400"
+          className="min-w-0 flex-1 text-sm outline-none bg-transparent placeholder-gray-400"
           aria-label={vi.map.searchPlaceholder}
           aria-autocomplete="list"
           aria-controls="search-results"
@@ -84,6 +88,7 @@ export default function SearchBar({ onSelect }: SearchBarProps) {
         {/* Clear button */}
         {query && (
           <button
+            onMouseDown={(e) => e.preventDefault()}
             onClick={() => { setQuery(''); setIsOpen(false) }}
             className="text-gray-400 hover:text-gray-600"
             aria-label="Xóa tìm kiếm"
@@ -103,7 +108,9 @@ export default function SearchBar({ onSelect }: SearchBarProps) {
           role="listbox"
           className="absolute top-full mt-1 w-full bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden z-50 max-h-64 overflow-y-auto"
         >
-          {isError ? (
+          {isDebouncing || isLoading ? (
+            <li className="px-4 py-3 text-sm text-gray-500">{vi.map.searching}</li>
+          ) : isError ? (
             <li className="px-4 py-3 text-sm text-red-500">{vi.map.errorSearch}</li>
           ) : results.length === 0 ? (
             <li className="px-4 py-3 text-sm text-gray-500">{vi.map.noResults}</li>
@@ -113,6 +120,7 @@ export default function SearchBar({ onSelect }: SearchBarProps) {
                 key={result.placeId}
                 role="option"
                 aria-selected={i === activeIndex}
+                onMouseDown={(e) => e.preventDefault()}
                 onClick={() => handleSelect(result)}
                 className={`px-4 py-3 text-sm cursor-pointer transition-colors ${
                   i === activeIndex ? 'bg-primary-50 text-primary-700' : 'hover:bg-gray-50 text-gray-700'

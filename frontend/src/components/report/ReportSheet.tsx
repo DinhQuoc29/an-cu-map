@@ -49,7 +49,7 @@ export default function ReportSheet({ location, isOpen, onClose }: ReportSheetPr
       }
     : null
 
-  const { data, isLoading } = useReport(reportParams)
+  const { data, isLoading, isFetching, refetch } = useReport(reportParams)
 
   return (
     <>
@@ -106,7 +106,8 @@ export default function ReportSheet({ location, isOpen, onClose }: ReportSheetPr
             <CardErrorBoundary label="thời gian di chuyển">
               <CommuteCard
                 data={data?.commute ?? null}
-                isLoading={isLoading && commuteDest !== null}
+                isLoading={isFetching && commuteDest !== null}
+                onRetry={() => { void refetch() }}
                 onDestChange={handleDestChange}
                 onModeChange={handleModeChange}
                 currentMode={commuteMode}

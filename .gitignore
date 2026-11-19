@@ -13,6 +13,7 @@ infra/valhalla/data/*.osm.pbf
 infra/valhalla/data/*.pbf
 infra/valhalla/tiles/
 infra/valhalla/valhalla_tiles/
+infra/valhalla/valhalla_tiles.tar
 
 # ============================
 # Java / Maven
@@ -51,4 +52,6 @@ Thumbs.db
 # ============================
 *.log
 logs/
+__pycache__/
+*.pyc
 

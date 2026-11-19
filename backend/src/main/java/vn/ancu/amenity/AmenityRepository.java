@@ -31,5 +31,25 @@ public interface AmenityRepository extends JpaRepository<Amenity, Long> {
             @Param("category") String category,
             @Param("lim") int limit
     );
+
+    @Query(value = """
+            SELECT id, category, name, address,
+                   ST_Y(geom::geometry) AS lat,
+                   ST_X(geom::geometry) AS lng
+            FROM amenity
+            WHERE (name ILIKE CONCAT('%', :query, '%')
+                   OR address ILIKE CONCAT('%', :query, '%'))
+            ORDER BY CASE
+                         WHEN name ILIKE CONCAT(:query, '%') THEN 0
+                         WHEN address ILIKE CONCAT(:query, '%') THEN 1
+                         ELSE 2
+                     END,
+                     name NULLS LAST
+            LIMIT :lim
+            """, nativeQuery = true)
+    List<AmenityGeocodeRow> searchSuggestions(
+            @Param("query") String query,
+            @Param("lim") int limit
+    );
 }
 

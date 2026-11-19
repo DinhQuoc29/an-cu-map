@@ -6,16 +6,16 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * REST controller proxy Nominatim geocoding.
+ * REST controller proxy for the place/address geocoder.
  * GET /api/geocode?q=...
  */
 @RestController
 @RequestMapping("/api/geocode")
 public class GeocodeController {
 
-    private final NominatimClient client;
+    private final PhotonClient client;
 
-    public GeocodeController(NominatimClient client) {
+    public GeocodeController(PhotonClient client) {
         this.client = client;
     }
 

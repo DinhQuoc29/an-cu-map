@@ -22,8 +22,23 @@ public class FloodPoint {
     @Column(name = "geom", nullable = false, columnDefinition = "geography(Point,4326)")
     private Point geom;
 
-    @Column(name = "severity", nullable = false)
-    private short severity;   // 1-5 (SMALLINT)
+    @Column(name = "severity")
+    private Short severity;
+
+    @Column(name = "is_demo", nullable = false)
+    private boolean demo;
+
+    @Column(name = "reviewed", nullable = false)
+    private boolean reviewed;
+
+    @Column(name = "location_label")
+    private String locationLabel;
+
+    @Column(name = "location_precision_m")
+    private Integer locationPrecisionM;
+
+    @Column(name = "depth_cm")
+    private Integer depthCm;
 
     @Column(name = "source_type", nullable = false, length = 16)
     private String sourceType;
@@ -53,7 +68,7 @@ public class FloodPoint {
 
     public Long getId() { return id; }
     public Point getGeom() { return geom; }
-    public int getSeverity() { return severity; }
+    public Short getSeverity() { return severity; }
     public String getSourceType() { return sourceType; }
     public String getSourceName() { return sourceName; }
     public String getSourceUrl() { return sourceUrl; }

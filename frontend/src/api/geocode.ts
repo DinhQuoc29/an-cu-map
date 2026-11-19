@@ -1,14 +1,13 @@
 import type { GeocodeResult } from './types'
 
 /**
- * Tìm kiếm địa chỉ qua backend proxy /api/geocode → Nominatim.
- * Backend xử lý User-Agent, rate limit cache, nên frontend không cần lo.
+ * Tìm kiếm địa điểm và địa chỉ qua backend proxy /api/geocode → Photon.
  */
-export async function geocodeSearch(query: string): Promise<GeocodeResult[]> {
+export async function geocodeSearch(query: string, signal?: AbortSignal): Promise<GeocodeResult[]> {
   if (!query.trim()) return []
 
   const params = new URLSearchParams({ q: query })
-  const res = await fetch(`/api/geocode?${params.toString()}`)
+  const res = await fetch(`/api/geocode?${params.toString()}`, { signal })
 
   if (!res.ok) throw new Error(`Geocode error: ${String(res.status)}`)
 

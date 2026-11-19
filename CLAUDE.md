@@ -231,3 +231,21 @@ OPEN_METEO_BASE_URL=https://air-quality-api.open-meteo.com
 3. Viết/ cập nhật test (ưu tiên Testcontainers cho truy vấn PostGIS).
 4. Chạy `./mvnw test` (backend) và `npm run lint && npm run test` (frontend) trước khi báo hoàn thành.
 5. Cập nhật `CLAUDE.md` nếu quyết định kiến trúc thay đổi.
+
+
+## 14. Trạng thái MVP cập nhật 17/11/2026
+
+- Tìm kiếm địa chỉ dùng Photon (hỗ trợ autocomplete), không gọi Nominatim công khai.
+- Dữ liệu ngập demo nằm riêng trong `data/flood_history/demo`. Migration V5 đánh dấu
+  bản ghi cũ là demo. API chỉ trả lịch sử thực đã duyệt, có URL sự kiện và ngày.
+- Không có mô hình xác suất ngập đã kiểm chứng: `riskScore=null`, thiếu ghi nhận
+  phải hiện “Chưa đủ dữ liệu đánh giá”, không mặc định mức 1/5.
+- `historical_evidence.csv`: 20 ghi nhận có nguồn, 5 giao lộ đã kiểm tra OSM,
+  15 mục chờ kiểm tra vị trí. Dùng `import_flood_history.py --apply` để nhập mục đã duyệt.
+- Không khí dùng 365 ngày hoàn tất gần nhất, CAMS Global khoảng 45 km tại Hà Nội.
+  API trả kỳ dữ liệu và số giờ hợp lệ, tối thiểu 90% độ phủ. Không gán nhãn AQI cho
+  trung bình năm; độ tin cậy chưa hiệu chỉnh để null.
+- Cache tuyến dùng tọa độ chính xác trong bộ nhớ, hết hạn sau 15 phút; không ghi
+  khóa vị trí chính xác vào database, không dùng chung kết quả cho cả ô 500 m.
+- `/api/health` kiểm tra database và Valhalla. Compose profile `app` đóng gói
+  backend và nginx/frontend tại cổng 8088. Xem `docs/mvp-validation.md`.

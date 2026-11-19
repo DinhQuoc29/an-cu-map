@@ -6,8 +6,9 @@ Thư mục này chứa cấu hình và dữ liệu cho Valhalla routing engine.
 
 ```
 infra/valhalla/
-├── data/            ← Đặt file .osm.pbf ở đây (KHÔNG commit file lớn)
-│   └── file_hashes.txt
+├── valhalla.json    ← Cấu hình build và chạy Valhalla
+├── data/            ← PBF gốc và PBF Hà Nội (không commit file lớn)
+├── valhalla_tiles/  ← Graph tiles sinh tự động (không commit)
 └── README.md
 ```
 
@@ -36,11 +37,17 @@ osmium extract \
 ### 3. Build tiles Valhalla
 
 ```bash
-# Khởi động container với PBF, để Valhalla tự build tiles
-docker compose run --rm valhalla \
-  valhalla_build_tiles -c /custom_files/valhalla.json \
+# Tạo thư mục đầu ra và build graph từ extract Hà Nội
+mkdir -p infra/valhalla/valhalla_tiles
+docker compose run --rm --no-deps \
+  --entrypoint valhalla_build_tiles valhalla \
+  -c /custom_files/valhalla.json -j 2 \
   /custom_files/data/hanoi.osm.pbf
 ```
+
+`valhalla.json` đã được tạo sẵn cho mount `/custom_files`. Tùy chọn `-j 2`
+giới hạn số luồng để build ổn định trên máy phát triển; có thể tăng nếu máy có
+nhiều tài nguyên hơn.
 
 ### 4. Chạy dịch vụ
 
@@ -48,6 +55,9 @@ docker compose run --rm valhalla \
 docker compose up -d valhalla
 # Kiểm tra: curl http://localhost:8002/status
 ```
+
+Nếu cần dựng lại graph, dừng service trước, chạy lại lệnh build ở trên, rồi khởi
+động service. Không cần build lại khi chỉ restart container.
 
 ## Profiles được dùng
 

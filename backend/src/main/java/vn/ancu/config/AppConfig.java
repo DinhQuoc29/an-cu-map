@@ -7,6 +7,10 @@ import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import reactor.netty.http.client.HttpClient;
+import io.netty.resolver.DefaultAddressResolverGroup;
+import io.netty.channel.ChannelOption;
 
 import java.time.Duration;
 
@@ -24,6 +28,9 @@ public class AppConfig {
     @Bean
     public WebClient.Builder webClientBuilder() {
         return WebClient.builder()
+                .clientConnector(new ReactorClientHttpConnector(HttpClient.create()
+                        .resolver(DefaultAddressResolverGroup.INSTANCE)
+                        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 3000)))
                 .codecs(config -> config.defaultCodecs().maxInMemorySize(2 * 1024 * 1024)); // 2 MB
     }
 
@@ -34,7 +41,8 @@ public class AppConfig {
     @Bean
     public CacheManager cacheManager() {
         var manager = new CaffeineCacheManager();
-        // geocodeCache: TTL 1 giờ — Nominatim rate limit 1 req/s
+        manager.setAsyncCacheMode(true); // Spring caches Mono values asynchronously.
+        // geocodeCache: TTL 1 giờ — giảm truy vấn lặp đến geocoder
         manager.registerCustomCache("geocodeCache",
                 Caffeine.newBuilder()
                         .maximumSize(500)

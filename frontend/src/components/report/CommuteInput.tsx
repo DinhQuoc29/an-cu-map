@@ -28,17 +28,17 @@ export default function CommuteInput({ onDestChange, onModeChange, currentMode }
   const [activeIndex, setActiveIndex] = useState(-1)
   const inputRef = useRef<HTMLInputElement>(null)
 
-  const { data: results = [], isLoading } = useGeocode(query)
+  const { data: results, isLoading, isError, isDebouncing } = useGeocode(query)
 
   useEffect(() => {
-    setIsOpen(results.length > 0 && query.trim().length >= 3)
     setActiveIndex(-1)
-  }, [results, query])
+  }, [query])
 
   function handleSelect(result: GeocodeResult) {
     setQuery(result.displayName)
     setIsOpen(false)
     onDestChange({ lat: result.lat, lng: result.lng })
+    inputRef.current?.blur()
   }
 
   function handleClear() {
@@ -73,11 +73,17 @@ export default function CommuteInput({ onDestChange, onModeChange, currentMode }
             ref={inputRef}
             type="search"
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value
+              setQuery(value)
+              setIsOpen(value.trim().length >= 3)
+              onDestChange(null)
+            }}
             onKeyDown={handleKeyDown}
-            onFocus={() => results.length > 0 && setIsOpen(true)}
+            onFocus={() => query.trim().length >= 3 && setIsOpen(true)}
+            onBlur={() => setIsOpen(false)}
             placeholder="Nhập điểm đến (nơi làm, học…)"
-            className="flex-1 text-sm outline-none bg-transparent placeholder-gray-400"
+            className="min-w-0 flex-1 text-sm outline-none bg-transparent placeholder-gray-400"
             aria-label="Điểm đến"
           />
           {isLoading && (
@@ -96,16 +102,23 @@ export default function CommuteInput({ onDestChange, onModeChange, currentMode }
         </div>
 
         {/* Dropdown kết quả */}
-        {isOpen && (
+        {isOpen && query.trim().length >= 3 && (
           <ul
             role="listbox"
             className="absolute top-full mt-1 w-full bg-white rounded-lg shadow-lg border border-gray-100 z-50 max-h-48 overflow-y-auto"
           >
-            {results.map((result, i) => (
+            {isDebouncing || isLoading ? (
+              <li className="px-3 py-2 text-xs text-gray-500">{vi.map.searching}</li>
+            ) : isError ? (
+              <li className="px-3 py-2 text-xs text-red-500">{vi.map.errorSearch}</li>
+            ) : results.length === 0 ? (
+              <li className="px-3 py-2 text-xs text-gray-500">{vi.map.noResults}</li>
+            ) : results.map((result, i) => (
               <li
                 key={result.placeId}
                 role="option"
                 aria-selected={i === activeIndex}
+                onMouseDown={(e) => e.preventDefault()}
                 onClick={() => handleSelect(result)}
                 className={`px-3 py-2 text-xs cursor-pointer transition-colors ${
                   i === activeIndex ? 'bg-primary-50 text-primary-700' : 'hover:bg-gray-50 text-gray-700'

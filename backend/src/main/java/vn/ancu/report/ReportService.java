@@ -81,7 +81,7 @@ public class ReportService {
             CompletableFuture.allOf(amenitiesFuture, airFuture, floodFuture, commuteFuture)
                     .get(TOTAL_TIMEOUT_SECONDS, TimeUnit.SECONDS);
         } catch (Exception ex) {
-            log.warn("Report timeout or error (lat={}, lng={}): {}", lat, lng, ex.getMessage());
+            log.warn("Report timeout or error: {}", ex.getClass().getSimpleName());
         }
 
         return new LocationReportDto(

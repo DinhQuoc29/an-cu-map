@@ -16,43 +16,25 @@ function wrapper({ children }: { children: React.ReactNode }) {
 // ─── FloodCard ────────────────────────────────────────────────────────────────
 
 describe('FloodCard', () => {
-  it('hiển thị spinner khi isLoading=true', () => {
+  it('shows loading', () => {
     render(<FloodCard data={null} isLoading={true} />, { wrapper })
     expect(screen.getByRole('status')).toBeInTheDocument()
   })
 
-  it('hiển thị "Không có dữ liệu" khi data=null và không loading', () => {
-    render(<FloodCard data={null} isLoading={false} />, { wrapper })
-    expect(screen.getByText(/không có dữ liệu/i)).toBeInTheDocument()
+  it('does not infer low risk from missing data', () => {
+    const data: FloodRiskResponse = { riskScore: null, nearbyPointsCount: 0, evidence: [], assessmentStatus: 'INSUFFICIENT_DATA', radiusM: 500 }
+    render(<FloodCard data={data} isLoading={false} />, { wrapper })
+    expect(screen.getByText(/Chưa đủ dữ liệu/)).toBeInTheDocument()
+    expect(screen.queryByText('1/5')).not.toBeInTheDocument()
   })
 
-  it('hiển thị mức nguy cơ và nguồn khi có data', () => {
-    const data: FloodRiskResponse = {
-      riskScore: {
-        value: 3,
-        unit: '',
-        sourceType: 'HISTORICAL',
-        sourceName: 'Test',
-        confidence: 0.4,
-        updatedAt: new Date().toISOString(),
-      },
-      nearbyPointsCount: 5,
-    }
+  it('shows source links and dates for historical evidence', () => {
+    const data: FloodRiskResponse = { riskScore: null, nearbyPointsCount: 1, assessmentStatus: 'HISTORICAL_EVIDENCE', radiusM: 500,
+      evidence: [{ id: 1, locationLabel: 'Tạ Hiện', eventDate: '2024-08-13', sourceName: 'VnExpress', sourceUrl: 'https://vnexpress.net/event.html', depthCm: 50, locationPrecisionM: 100, distanceM: 50 }] }
     render(<FloodCard data={data} isLoading={false} />, { wrapper })
-    expect(screen.getByText('3/5')).toBeInTheDocument()
-    // "Trung bình" và "Lịch sử" xuất hiện nhiều lần (nhãn + badge) — dùng getAllByText
-    expect(screen.getAllByText(/trung bình/i).length).toBeGreaterThanOrEqual(1)
-    expect(screen.getByText('5 điểm ngập lịch sử trong bán kính 500 m')).toBeInTheDocument()
-    expect(screen.getAllByText(/lịch sử/i).length).toBeGreaterThanOrEqual(1)
-  })
-
-  it('hiển thị disclaimer luôn luôn', () => {
-    const data: FloodRiskResponse = {
-      riskScore: { value: 1, unit: '', sourceType: 'HISTORICAL', sourceName: 'T', confidence: 0.2, updatedAt: '' },
-      nearbyPointsCount: 0,
-    }
-    render(<FloodCard data={data} isLoading={false} />, { wrapper })
-    expect(screen.getByText(/ước tính/i)).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Xem nguồn' })).toHaveAttribute('href', 'https://vnexpress.net/event.html')
+    expect(screen.getByText(/2024-08-13/)).toBeInTheDocument()
+    expect(screen.getByText(/50 cm/)).toBeInTheDocument()
   })
 })
 
@@ -79,17 +61,17 @@ describe('AirQualityCard', () => {
     render(<AirQualityCard data={data} isLoading={false} />, { wrapper })
     expect(screen.getByText('28.5')).toBeInTheDocument()
     // "Trung bình" và "Mô hình" xuất hiện nhiều lần — dùng getAllByText
-    expect(screen.getAllByText(/trung bình/i).length).toBeGreaterThanOrEqual(1)
+    expect(screen.getByText(/PM2.5 trung bình 365 ngày/)).toBeInTheDocument()
     expect(screen.getAllByText(/mô hình/i).length).toBeGreaterThanOrEqual(1)
   })
 
-  it('hiển thị "Tốt" khi PM2.5 <= 15', () => {
+  it('hiển thị trung bình năm mà không gán nhãn AQI', () => {
     const data: AirQualityResponse = {
       pm25: { value: 10.0, unit: 'µg/m³', sourceType: 'MODELED', sourceName: 'T', confidence: 0.6, updatedAt: '' },
       nearestStationKm: null,
     }
     render(<AirQualityCard data={data} isLoading={false} />, { wrapper })
-    expect(screen.getByText('Tốt')).toBeInTheDocument()
+    expect(screen.getByText('10.0')).toBeInTheDocument(); expect(screen.queryByText('Tốt')).not.toBeInTheDocument()
   })
 })
 

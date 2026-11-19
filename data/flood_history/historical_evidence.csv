@@ -1,0 +1,21 @@
+location_label,event_date,source_name,source_url,depth_cm,lat,lng,location_precision_m,reviewed,geocode_method
+Tạ Hiện - Lương Ngọc Quyến,2024-08-13,VnExpress,https://vnexpress.net/pho-co-ha-noi-ngap-sau-tran-mua-lon-4781156.html,50,21.0347124,105.8521568,100,true,Local Hanoi OSM extract: shared named-road intersection node(s) 81794512; source names cross-checked 2026-11-17; approximate extent 100 m
+"Phùng Hưng, khu vực phố cổ",2024-08-13,VnExpress,https://vnexpress.net/pho-co-ha-noi-ngap-sau-tran-mua-lon-4781156.html,,,,,false,
+Thụy Khuê,2024-08-13,VnExpress,https://vnexpress.net/pho-co-ha-noi-ngap-sau-tran-mua-lon-4781156.html,,,,,false,
+Điện Biên Phủ - Nguyễn Tri Phương,2024-08-13,VnExpress,https://vnexpress.net/pho-co-ha-noi-ngap-sau-tran-mua-lon-4781156.html,,21.0313878,105.8403893,100,true,Local Hanoi OSM extract: shared named-road intersection node(s) 1955238047;5703675543; source names cross-checked 2026-11-17; approximate extent 100 m
+Nguyễn Khuyến,2024-08-13,VnExpress,https://vnexpress.net/pho-co-ha-noi-ngap-sau-tran-mua-lon-4781156.html,,,,,false,
+Phan Bội Châu - Lý Thường Kiệt,2024-08-13,VnExpress,https://vnexpress.net/pho-co-ha-noi-ngap-sau-tran-mua-lon-4781156.html,,21.0254436,105.8432716,100,true,Local Hanoi OSM extract: shared named-road intersection node(s) 98011280; source names cross-checked 2026-11-17; approximate extent 100 m
+Ngã năm Bà Triệu,2024-08-13,VnExpress,https://vnexpress.net/pho-co-ha-noi-ngap-sau-tran-mua-lon-4781156.html,,,,,false,
+Hàng Bài - Hai Bà Trưng,2024-08-13,VnExpress,https://vnexpress.net/pho-co-ha-noi-ngap-sau-tran-mua-lon-4781156.html,,21.0242487,105.8529397,100,true,Local Hanoi OSM extract: shared named-road intersection node(s) 98010040; source names cross-checked 2026-11-17; approximate extent 100 m
+Tông Đản,2024-08-13,VnExpress,https://vnexpress.net/pho-co-ha-noi-ngap-sau-tran-mua-lon-4781156.html,,,,,false,
+Liên Trì - Nguyễn Gia Thiều,2024-08-13,VnExpress,https://vnexpress.net/pho-co-ha-noi-ngap-sau-tran-mua-lon-4781156.html,,21.020136,105.8459361,100,true,Local Hanoi OSM extract: shared named-road intersection node(s) 103041218; source names cross-checked 2026-11-17; approximate extent 100 m
+Huỳnh Thúc Kháng,2024-08-13,VnExpress,https://vnexpress.net/pho-co-ha-noi-ngap-sau-tran-mua-lon-4781156.html,,,,,false,
+"Hoàng Mai, đường vào UBND phường Hoàng Văn Thụ thời điểm 2024",2024-08-13,VnExpress,https://vnexpress.net/pho-co-ha-noi-ngap-sau-tran-mua-lon-4781156.html,,,,,false,
+Nguyễn Huy Tưởng,2025-10-11,VnExpress,https://vnexpress.net/ha-noi-mua-giong-20-phut-mot-so-tuyen-pho-ngap-4950072.html,30,,,,false,
+Quan Nhân,2025-10-11,VnExpress,https://vnexpress.net/ha-noi-mua-giong-20-phut-mot-so-tuyen-pho-ngap-4950072.html,30,,,,false,
+Phạm Tu,2025-10-11,VnExpress,https://vnexpress.net/ha-noi-mua-giong-20-phut-mot-so-tuyen-pho-ngap-4950072.html,30,,,,false,
+"Nguyễn Trãi, đoạn qua Đại học Khoa học Tự nhiên",2024-06-05,VnExpress,https://vnexpress.net/ha-noi-mua-lon-ngap-nhieu-tuyen-pho-4754549.html,,,,,false,
+Liễu Giai,2024-06-05,VnExpress,https://vnexpress.net/ha-noi-mua-lon-ngap-nhieu-tuyen-pho-4754549.html,,,,,false,
+Tố Hữu,2024-06-05,VnExpress,https://vnexpress.net/ha-noi-mua-lon-ngap-nhieu-tuyen-pho-4754549.html,,,,,false,
+Vũ Trọng Phụng,2024-06-05,VnExpress,https://vnexpress.net/ha-noi-mua-lon-ngap-nhieu-tuyen-pho-4754549.html,,,,,false,
+Ngõ 63 Mỹ Đình,2024-06-05,VnExpress,https://vnexpress.net/ha-noi-mua-lon-ngap-nhieu-tuyen-pho-4754549.html,50,,,,false,

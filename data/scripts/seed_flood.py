@@ -34,10 +34,10 @@ try:
     backend_env = Path(__file__).resolve().parents[2] / "backend" / ".env"
     root_env = Path(__file__).resolve().parents[2] / ".env"
     if backend_env.exists():
-        load_dotenv(backend_env, override=True)
+        load_dotenv(backend_env, override=False)
         print(f"Đã nạp .env từ: {backend_env}")
     elif root_env.exists():
-        load_dotenv(root_env, override=True)
+        load_dotenv(root_env, override=False)
         print(f"Đã nạp .env từ: {root_env}")
     else:
         load_dotenv()
@@ -55,13 +55,13 @@ DB_CONFIG = {
 }
 
 INSERT_SQL = """
-INSERT INTO flood_point (geom, severity, source_type, source_name, source_url, event_date, confidence, status)
+INSERT INTO flood_point (geom, severity, source_type, source_name, source_url, event_date, confidence, status, is_demo, reviewed)
 VALUES %s
 ON CONFLICT DO NOTHING
 """
 
 # Template cho execute_values: (geography point, ...)
-ROW_TEMPLATE = "(ST_MakePoint(%s, %s)::geography, %s, %s, %s, %s, %s, %s, 'ACTIVE')"
+ROW_TEMPLATE = "(ST_MakePoint(%s, %s)::geography, %s, %s, %s, %s, %s, %s, 'ACTIVE', TRUE, FALSE)"
 
 
 def load_csv(csv_path: Path) -> list[tuple]:
@@ -106,9 +106,13 @@ def seed(csv_path: Path):
             existing = cur.fetchone()[0]
             print(f"Hiện tại bảng flood_point có {existing} bản ghi.")
 
+            cur.execute("SELECT ST_X(geom::geometry), ST_Y(geom::geometry), event_date FROM flood_point WHERE is_demo")
+            imported = {(lng, lat, str(event_date)) for lng, lat, event_date in cur.fetchall()}
+            rows = [row for row in rows if (row[0], row[1], str(row[6])) not in imported]
+
             # Nạp dữ liệu
-            execute_values(cur, INSERT_SQL, rows, template=ROW_TEMPLATE, page_size=100)
-            inserted = cur.rowcount
+            if rows:
+                execute_values(cur, INSERT_SQL, rows, template=ROW_TEMPLATE, page_size=100)
             conn.commit()
 
             cur.execute("SELECT COUNT(*) FROM flood_point")
@@ -131,10 +135,15 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Seed flood history data vào PostGIS")
     parser.add_argument(
         "--csv",
-        default=str(Path(__file__).resolve().parents[2] / "data/flood_history/hanoi_flood_2024.csv"),
+        default=str(Path(__file__).resolve().parents[2] / "data/flood_history/demo/hanoi_flood_2024.csv"),
         help="Đường dẫn tới file CSV dữ liệu ngập"
     )
+    parser.add_argument('--demo', action='store_true', help='Explicitly acknowledge that these are fake demo records')
     args = parser.parse_args()
+    if not args.demo:
+        parser.error('This script only imports FAKE demo data. Pass --demo, or use import_flood_history.py for real sources.')
+    if 'dev' not in os.getenv('SPRING_PROFILES_ACTIVE', 'dev').split(','):
+        parser.error('Demo data may only be imported with the dev profile.')
 
     csv_file = Path(args.csv)
     if not csv_file.exists():

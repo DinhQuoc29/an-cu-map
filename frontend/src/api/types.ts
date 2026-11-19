@@ -24,7 +24,7 @@ export interface DataField<T> {
   updatedAt: string           // ISO 8601
 }
 
-// ─── Geocoding (Nominatim qua /api/geocode) ─────────────────────────────────
+// ─── Geocoding (Photon qua /api/geocode) ────────────────────────────────────
 
 export interface GeocodeResult {
   placeId: string
@@ -64,6 +64,10 @@ export interface AmenitiesResponse {
 export interface AirQualityResponse {
   pm25: DataField<number>
   nearestStationKm: number | null   // khoảng cách trạm đo gần nhất (km), null = mô hình
+  periodStart?: string | null
+  periodEnd?: string | null
+  validHours?: number
+  expectedHours?: number
 }
 
 // ─── Flood ───────────────────────────────────────────────────────────────────
@@ -71,8 +75,22 @@ export interface AirQualityResponse {
 export type FloodSeverity = 1 | 2 | 3 | 4 | 5
 
 export interface FloodRiskResponse {
-  riskScore: DataField<FloodSeverity>
+  riskScore: DataField<FloodSeverity> | null
   nearbyPointsCount: number
+  evidence: FloodEvidence[]
+  assessmentStatus: 'INSUFFICIENT_DATA' | 'HISTORICAL_EVIDENCE'
+  radiusM: number
+}
+
+export interface FloodEvidence {
+  id: number
+  locationLabel: string
+  eventDate: string
+  sourceName: string
+  sourceUrl: string
+  depthCm: number | null
+  locationPrecisionM: number | null
+  distanceM: number
 }
 
 // ─── Routing ─────────────────────────────────────────────────────────────────

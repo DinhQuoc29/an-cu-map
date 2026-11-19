@@ -4,6 +4,8 @@ import type { RouteResult, TravelMode } from '@/api/types'
 import type { LatLng } from '@/lib/geo'
 import LoadingSpinner from '@/components/common/LoadingSpinner'
 import CommuteInput from './CommuteInput'
+import SourceBadge from '@/components/common/SourceBadge'
+import ConfidenceBadge from '@/components/common/ConfidenceBadge'
 
 interface CommuteCardProps {
   data: RouteResult[] | null
@@ -12,6 +14,7 @@ interface CommuteCardProps {
   onModeChange: (mode: TravelMode) => void
   currentMode: TravelMode
   hasDest: boolean
+  onRetry: () => void
 }
 
 /** Icon phương tiện */
@@ -29,6 +32,7 @@ export default function CommuteCard({
   onModeChange,
   currentMode,
   hasDest,
+  onRetry,
 }: CommuteCardProps) {
   return (
     <div className="report-card">
@@ -48,11 +52,16 @@ export default function CommuteCard({
         )}
 
         {hasDest && isLoading && (
-          <LoadingSpinner size="sm" label="Đang tính thời gian…" />
+          <LoadingSpinner size="sm" label={vi.commute.loading} />
         )}
 
         {hasDest && !isLoading && (!data || data.length === 0) && (
-          <p className="text-sm text-gray-400">Không tính được thời gian di chuyển</p>
+          <div>
+            <p className="text-sm text-gray-500" role="status">{vi.commute.unavailable}</p>
+            <button type="button" onClick={onRetry} className="mt-2 rounded-lg bg-primary-50 px-3 py-2 text-sm text-primary-700">
+              {vi.commute.retry}
+            </button>
+          </div>
         )}
 
         {hasDest && !isLoading && data && data.length > 0 && (
@@ -71,6 +80,11 @@ export default function CommuteCard({
       </div>
 
       <p className="text-xs text-gray-400 mt-2 italic">{vi.commute.disclaimer}</p>
+      {hasDest && !isLoading && !!data?.length && (
+        <div className="mt-2 flex flex-wrap gap-1 text-xs text-gray-500">
+          <span>Valhalla / OpenStreetMap</span><SourceBadge sourceType="MODELED" /><ConfidenceBadge confidence={null} />
+        </div>
+      )}
     </div>
   )
 }
